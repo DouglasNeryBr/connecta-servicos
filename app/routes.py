@@ -1,6 +1,6 @@
 from flask import jsonify
 from app import app
-from .models import PROFISSIONAIS_DB
+from .models import Profissional
 
 @app.route('/')
 def index():
@@ -9,5 +9,7 @@ def index():
 
 @app.route('/api/v1/profissionais', methods=['GET'])
 def get_profissionais():
-    """Retorna a lista de todos os profissionais."""
-    return jsonify(PROFISSIONAIS_DB)
+    """Retorna a lista de todos os profissionais do banco de dados."""
+    profissionais_db = Profissional.query.all()
+    profissionais_lista = [p.to_dict() for p in profissionais_db]
+    return jsonify(profissionais_lista)
