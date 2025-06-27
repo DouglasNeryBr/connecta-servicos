@@ -1,4 +1,6 @@
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class Profissional(db.Model):
     """
@@ -24,3 +26,22 @@ class Profissional(db.Model):
             'estrelas': self.estrelas,
             'descricao': self.descricao
         }
+
+
+class Usuario(db.Model):
+    """
+    Representa a tabela de usuários (clientes e profissionais).
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), index=True, unique=True, nullable=False)
+    password_hash = db.Column(db.String(256))
+    nome = db.Column(db.String(100))
+    tipo_usuario = db.Column(db.String(50), nullable=False, default='cliente') # ex: 'cliente' ou 'profissional'
+
+    def set_password(self, password):
+        """Gera o hash da senha e o armazena."""
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        """Verifica se a senha fornecida corresponde ao hash armazenado."""
+        return check_password_hash(self.password_hash, password)
